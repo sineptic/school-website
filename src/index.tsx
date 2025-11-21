@@ -1,7 +1,7 @@
 import { render } from "preact";
 
 import "./style.css";
-import { useEffect, useState } from "preact/hooks";
+import { useEffect } from "preact/hooks";
 import { ConvexProvider, ConvexReactClient, useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 

@@ -4,8 +4,8 @@ import { query } from "./_generated/server";
 export const get = query({
   args: {},
   handler: async (ctx) => {
-    const menu = await ctx.db.query("orders").collect();
-    let res: Doc<"orders">[][] = [
+    const menu = await ctx.db.query("menu").collect();
+    let res: Doc<"menu">[][] = [
       [],
       [],
       [],

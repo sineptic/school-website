@@ -2,7 +2,7 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 export default defineSchema({
-  orders: defineTable({
+  menu: defineTable({
     day_number: v.number(),
     name: v.string(),
     contents: v.array(v.string()),
