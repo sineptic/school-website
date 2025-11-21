@@ -1,7 +1,8 @@
 import { Doc } from "./_generated/dataModel";
-import { query } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
+import { v } from "convex/values";
 
-export const get = query({
+export const getMenu = query({
   args: {},
   handler: async (ctx) => {
     const menu = await ctx.db.query("menu").collect();
@@ -25,5 +26,29 @@ export const get = query({
       res[menuItem.day_number - 1].push(menuItem);
     }
     return res;
+  },
+});
+
+export const add = mutation({
+  args: {
+    menuItem: v.id("menu"),
+  },
+  handler: async (ctx, { menuItem }) => {
+    ctx.db.insert("orders", { menu_item: menuItem });
+  },
+});
+export const remove = mutation({
+  args: {
+    id: v.id("orders"),
+  },
+  handler: async (ctx, { id }) => {
+    ctx.db.delete(id);
+  },
+});
+
+export const getOrder = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db.query("orders").collect();
   },
 });

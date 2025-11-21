@@ -2,8 +2,14 @@ import { render } from "preact";
 
 import "./style.css";
 import { useEffect } from "preact/hooks";
-import { ConvexProvider, ConvexReactClient, useQuery } from "convex/react";
+import {
+  ConvexProvider,
+  ConvexReactClient,
+  useMutation,
+  useQuery,
+} from "convex/react";
 import { api } from "../convex/_generated/api";
+import { Doc } from "../convex/_generated/dataModel";
 
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
 
@@ -15,8 +21,66 @@ function App() {
   return <OrderForm></OrderForm>;
 }
 
+function Product({
+  menuItem,
+  order,
+}: {
+  menuItem: Doc<"menu">;
+  order: Doc<"orders"> | undefined;
+}) {
+  const add = useMutation(api.order.add);
+  const remove = useMutation(api.order.remove);
+  const handleClick = () => {
+    console.log();
+    if (order === undefined) {
+      add({ menuItem: menuItem._id });
+    } else {
+      remove({ id: order._id });
+    }
+  };
+  return (
+    <tr>
+      <td class="hover-group">
+        {menuItem.name}
+        <div class="show-on-hover">
+          <div class="product-description">
+            <span>
+              <b>Состав</b>: {menuItem.contents.join(", ")}
+            </span>
+            <span>
+              <b>Белки</b>: {menuItem.proteins}
+            </span>
+            <span>
+              <b>Жиры</b>: {menuItem.fats}
+            </span>
+            <span>
+              <b>Углеводы</b>: {menuItem.carbonhydrates}
+            </span>
+            <span>
+              <b>Ккал</b>: {menuItem.energy_value}
+            </span>
+          </div>
+        </div>
+      </td>
+      <td>{menuItem.mass}г</td>
+      <td>{menuItem.price} руб</td>
+      <td>
+        <input
+          type="checkbox"
+          name={menuItem._id}
+          id={menuItem._id}
+          class="food-order-checkbox"
+          onClick={handleClick}
+          checked={order !== undefined}
+        ></input>
+      </td>
+    </tr>
+  );
+}
+
 function OrderForm() {
-  const ordersByDay = useQuery(api.order.get);
+  const ordersByDay = useQuery(api.order.getMenu);
+  const ordered = useQuery(api.order.getOrder);
 
   return (
     <form action="/order/submit" method="post">
@@ -40,41 +104,11 @@ function OrderForm() {
                     <th colspan={4}>День {day[0].day_number}</th>
                   </tr>
                   {day.map((menuItem) => {
+                    const order = ordered?.find(
+                      (item) => item.menu_item === menuItem._id,
+                    );
                     return (
-                      <tr>
-                        <td class="hover-group">
-                          {menuItem.name}
-                          <div class="show-on-hover">
-                            <div class="product-description">
-                              <span>
-                                <b>Состав</b>: {menuItem.contents.join(", ")}
-                              </span>
-                              <span>
-                                <b>Белки</b>: {menuItem.proteins}
-                              </span>
-                              <span>
-                                <b>Жиры</b>: {menuItem.fats}
-                              </span>
-                              <span>
-                                <b>Углеводы</b>: {menuItem.carbonhydrates}
-                              </span>
-                              <span>
-                                <b>Ккал</b>: {menuItem.energy_value}
-                              </span>
-                            </div>
-                          </div>
-                        </td>
-                        <td>{menuItem.mass}г</td>
-                        <td>{menuItem.price} руб</td>
-                        <td>
-                          <input
-                            type="checkbox"
-                            name={menuItem._id}
-                            id={menuItem._id}
-                            class="food-order-checkbox"
-                          ></input>
-                        </td>
-                      </tr>
+                      <Product menuItem={menuItem} order={order}></Product>
                     );
                   })}
                 </>
@@ -90,5 +124,5 @@ render(
   <ConvexProvider client={convex}>
     <App />
   </ConvexProvider>,
-  document.getElementById("app"),
+  document.getElementById("app")!,
 );

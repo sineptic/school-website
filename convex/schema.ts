@@ -13,4 +13,7 @@ export default defineSchema({
     carbonhydrates: v.float64(),
     energy_value: v.float64(),
   }),
+  orders: defineTable({
+    menu_item: v.id("menu"),
+  }),
 });
