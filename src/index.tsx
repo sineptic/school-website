@@ -88,7 +88,7 @@ function OrderForm() {
   }
 
   return (
-    <form action="/order/submit" method="post">
+    <form>
       <table>
         <colgroup span={3}></colgroup>
         <thead>

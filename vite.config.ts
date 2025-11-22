@@ -7,7 +7,7 @@ export default defineConfig({
   esbuild: {
     minifyIdentifiers: false,
     minifyWhitespace: false,
-    minifySyntax: true,
+    minifySyntax: false,
     // to remove PURE comments
     jsxSideEffects: true,
   },
