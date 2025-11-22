@@ -4,8 +4,15 @@ import preact from "@preact/preset-vite";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [preact()],
+  esbuild: {
+    minifyIdentifiers: false,
+    minifyWhitespace: false,
+    minifySyntax: true,
+    // to remove PURE comments
+    jsxSideEffects: true,
+  },
   build: {
-    minify: false,
+    minify: "esbuild",
     rollupOptions: {
       output: {
         manualChunks(id) {
