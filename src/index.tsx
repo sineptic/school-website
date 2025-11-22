@@ -1,7 +1,7 @@
 import { render } from "preact";
 
 import "./style.css";
-import { useEffect } from "preact/hooks";
+import { useEffect, useMemo } from "preact/hooks";
 import {
   ConvexProvider,
   ConvexReactClient,
@@ -10,6 +10,7 @@ import {
 } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { Doc } from "../convex/_generated/dataModel";
+import { StrictMode, Suspense } from "preact/compat";
 
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
 
@@ -82,6 +83,10 @@ function OrderForm() {
   const ordersByDay = useQuery(api.order.getMenu);
   const ordered = useQuery(api.order.getOrder);
 
+  if (ordersByDay === undefined || ordered === undefined) {
+    return "Loading";
+  }
+
   return (
     <form action="/order/submit" method="post">
       <table>
@@ -96,7 +101,7 @@ function OrderForm() {
         </thead>
         <tbody>
           {ordersByDay
-            ?.filter((day) => day.length !== 0)
+            .filter((day) => day.length !== 0)
             .map((day) => {
               return (
                 <>
@@ -104,7 +109,7 @@ function OrderForm() {
                     <th colspan={4}>День {day[0].day_number}</th>
                   </tr>
                   {day.map((menuItem) => {
-                    const order = ordered?.find(
+                    const order = ordered.find(
                       (item) => item.menu_item === menuItem._id,
                     );
                     return (
@@ -121,8 +126,10 @@ function OrderForm() {
 }
 
 render(
-  <ConvexProvider client={convex}>
-    <App />
-  </ConvexProvider>,
+  <StrictMode>
+    <ConvexProvider client={convex}>
+      <App />
+    </ConvexProvider>
+  </StrictMode>,
   document.getElementById("app")!,
 );
