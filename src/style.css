@@ -26,7 +26,8 @@ table {
   tbody {
     border: solid medium;
   }
-  td {
+  td,
+  th {
     border: solid thin;
     /*height: 1.4em;*/
     max-width: 15rem;

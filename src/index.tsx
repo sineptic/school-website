@@ -10,7 +10,7 @@ import {
 } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { Doc } from "../convex/_generated/dataModel";
-import { StrictMode, Suspense } from "preact/compat";
+import { StrictMode } from "preact/compat";
 
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
 
@@ -29,7 +29,8 @@ function OrderForm() {
   if (ordersByDay === undefined || ordered === undefined) {
     return "Loading";
   }
-
+  const find_order = (menuItem: Doc<"menu">) =>
+    ordered.find((item) => item.menu_item === menuItem._id);
   return (
     <table>
       <colgroup span={3}></colgroup>
@@ -45,17 +46,29 @@ function OrderForm() {
         {ordersByDay
           .filter((day) => day.length !== 0)
           .map((day) => {
+            let totalCost = 0;
+            for (const menuItem of day) {
+              if (find_order(menuItem) !== undefined) {
+                totalCost += menuItem.price;
+              }
+            }
             return (
               <>
                 <tr>
                   <th colspan={4}>День {day[0].day_number}</th>
                 </tr>
                 {day.map((menuItem) => {
-                  const order = ordered.find(
-                    (item) => item.menu_item === menuItem._id,
+                  return (
+                    <Product
+                      menuItem={menuItem}
+                      order={find_order(menuItem)}
+                    ></Product>
                   );
-                  return <Product menuItem={menuItem} order={order}></Product>;
                 })}
+                <tr>
+                  <th colspan={2}>Итог за день</th>
+                  <td>{totalCost}</td>
+                </tr>
               </>
             );
           })}
@@ -103,13 +116,16 @@ function Product({
               <b>Состав</b>: {menuItem.contents.join(", ")}
             </span>
             <span>
-              <b>Белки</b>: {menuItem.proteins}
+              <b>Вес</b>: {menuItem.mass}г
             </span>
             <span>
-              <b>Жиры</b>: {menuItem.fats}
+              <b>Белки</b>: {menuItem.proteins}г
             </span>
             <span>
-              <b>Углеводы</b>: {menuItem.carbonhydrates}
+              <b>Жиры</b>: {menuItem.fats}г
+            </span>
+            <span>
+              <b>Углеводы</b>: {menuItem.carbonhydrates}г
             </span>
             <span>
               <b>Ккал</b>: {menuItem.energy_value}
