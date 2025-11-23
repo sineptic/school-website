@@ -22,6 +22,48 @@ function App() {
   return <OrderForm></OrderForm>;
 }
 
+function OrderForm() {
+  const ordersByDay = useQuery(api.order.getMenu);
+  const ordered = useQuery(api.order.getOrder);
+
+  if (ordersByDay === undefined || ordered === undefined) {
+    return "Loading";
+  }
+
+  return (
+    <table>
+      <colgroup span={3}></colgroup>
+      <thead>
+        <tr>
+          <th>Название</th>
+          <th>Вес</th>
+          <th>Цена</th>
+          <th>Заказ</th>
+        </tr>
+      </thead>
+      <tbody>
+        {ordersByDay
+          .filter((day) => day.length !== 0)
+          .map((day) => {
+            return (
+              <>
+                <tr>
+                  <th colspan={4}>День {day[0].day_number}</th>
+                </tr>
+                {day.map((menuItem) => {
+                  const order = ordered.find(
+                    (item) => item.menu_item === menuItem._id,
+                  );
+                  return <Product menuItem={menuItem} order={order}></Product>;
+                })}
+              </>
+            );
+          })}
+      </tbody>
+    </table>
+  );
+}
+
 function Product({
   menuItem,
   order,
@@ -42,8 +84,20 @@ function Product({
   return (
     <tr>
       <td class="hover-group">
-        {menuItem.name}
-        <div class="show-on-hover">
+        <button
+          class="popover-trigger"
+          popovertarget={`${menuItem._id}-detailed-description`}
+        >
+          {menuItem.name}
+        </button>
+        <div id={`${menuItem._id}-detailed-description`} popover>
+          <button
+            class="popover-closing"
+            popovertarget={`${menuItem._id}-detailed-description`}
+            popovertargetaction="hide"
+          >
+            x
+          </button>
           <div class="product-description">
             <span>
               <b>Состав</b>: {menuItem.contents.join(", ")}
@@ -68,60 +122,12 @@ function Product({
       <td>
         <input
           type="checkbox"
-          name={menuItem._id}
-          id={menuItem._id}
           class="food-order-checkbox"
           onClick={handleClick}
           checked={order !== undefined}
         ></input>
       </td>
     </tr>
-  );
-}
-
-function OrderForm() {
-  const ordersByDay = useQuery(api.order.getMenu);
-  const ordered = useQuery(api.order.getOrder);
-
-  if (ordersByDay === undefined || ordered === undefined) {
-    return "Loading";
-  }
-
-  return (
-    <form>
-      <table>
-        <colgroup span={3}></colgroup>
-        <thead>
-          <tr>
-            <th>Название</th>
-            <th>Вес</th>
-            <th>Цена</th>
-            <th>Заказ</th>
-          </tr>
-        </thead>
-        <tbody>
-          {ordersByDay
-            .filter((day) => day.length !== 0)
-            .map((day) => {
-              return (
-                <>
-                  <tr>
-                    <th colspan={4}>День {day[0].day_number}</th>
-                  </tr>
-                  {day.map((menuItem) => {
-                    const order = ordered.find(
-                      (item) => item.menu_item === menuItem._id,
-                    );
-                    return (
-                      <Product menuItem={menuItem} order={order}></Product>
-                    );
-                  })}
-                </>
-              );
-            })}
-        </tbody>
-      </table>
-    </form>
   );
 }
 
