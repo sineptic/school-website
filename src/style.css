@@ -1,95 +1,90 @@
 body {
-    background-color: var(--background);
-    color: var(--foreground);
-    padding: 0;
+  background-color: var(--background);
+  color: var(--foreground);
+  padding: 0;
 }
 
 a:link,
 a:visited {
-    /*color: #38488f;*/
-    color: unset;
-    text-decoration: underline;
+  /*color: #38488f;*/
+  color: unset;
+  text-decoration: underline;
 }
 ol,
 ul {
-    background: oklch(70.4% 0.191 22.216 / 0.1);
-    border-radius: inherit;
-    padding-block: 0.5rem;
+  background: oklch(70.4% 0.191 22.216 / 0.1);
+  border-radius: inherit;
+  padding-block: 0.5rem;
 }
 
 table {
-    width: fit-content;
-    border-collapse: collapse;
-    border: solid thick;
+  width: fit-content;
+  border-collapse: collapse;
+  border: solid thick;
 
-    colgroup,
-    tbody {
-        border: solid medium;
-    }
-    td {
-        border: solid thin;
-        /*height: 1.4em;*/
-        max-width: 15rem;
-        /*width: -webkit-fill-available;*/
-        text-align: center;
-        padding: 0;
-    }
+  colgroup,
+  tbody {
+    border: solid medium;
+  }
+  td {
+    border: solid thin;
+    /*height: 1.4em;*/
+    max-width: 15rem;
+    /*width: -webkit-fill-available;*/
+    text-align: center;
+    padding: 0;
+  }
 }
 
 #orders {
-    thead th {
-        padding: 7px;
-    }
-    th,
-    td {
-        padding: 3px;
-    }
+  thead th {
+    padding: 7px;
+  }
+  th,
+  td {
+    padding: 3px;
+  }
 }
 
 ::selection {
-    background-color: var(--selection);
-    color: var(--selection-foreground);
+  background-color: var(--selection);
+  color: var(--selection-foreground);
 }
 
 :root {
-    --background: oklch(14.5% 0 0);
-    --foreground: oklch(98.5% 0 0);
+  --background: oklch(14.5% 0 0);
+  --foreground: oklch(98.5% 0 0);
 
-    --border: oklch(100% 0 0/0.1);
+  --border: oklch(100% 0 0/0.1);
 
-    --selection: oklch(92.2% 0 0);
-    --selection-foreground: oklch(20.5% 0 0);
+  --selection: oklch(92.2% 0 0);
+  --selection-foreground: oklch(20.5% 0 0);
 }
 
-.hover-group {
-    /*TODO: fix border slight misalignment*/
-    width: -webkit-fill-available;
-    display: inline-block;
-}
 .show-on-hover {
-    display: none;
-    position: absolute;
-    color: red;
-    background-color: var(--background);
-    margin-left: 2rem;
-    padding: 0.25rem;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-    border: solid 1px;
-    &:is(:where(.hover-group):hover *) {
-        @media (hover: hover) {
-            display: block;
-        }
+  display: none;
+  position: absolute;
+  color: red;
+  background-color: var(--background);
+  margin-left: 2rem;
+  padding: 0.25rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  border: solid 1px;
+  &:is(:where(.hover-group):hover *) {
+    @media (hover: hover) {
+      display: block;
     }
+  }
 }
 .product-description {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
 }
 
 #save-button {
-    position: fixed;
-    bottom: 5px;
-    right: 5px;
+  position: fixed;
+  bottom: 5px;
+  right: 5px;
 }
