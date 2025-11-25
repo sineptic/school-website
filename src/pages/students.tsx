@@ -2,6 +2,7 @@ import { useQuery, useMutation } from "convex/react";
 import { useEffect } from "preact/hooks";
 import { api } from "../../convex/_generated/api";
 import { Doc } from "../../convex/_generated/dataModel";
+import { dayPretty } from "../logic";
 
 export function StudentOrderForm() {
   useEffect(() => {
@@ -40,7 +41,7 @@ export function StudentOrderForm() {
             return (
               <>
                 <tr>
-                  <th colspan={4}>День {day[0].day_number}</th>
+                  <th colspan={4}>{dayPretty(day[0].day_number)}</th>
                 </tr>
                 {day.map((menuItem) => {
                   return (
@@ -95,26 +96,7 @@ function Product({
           >
             x
           </button>
-          <div class="product-description">
-            <span>
-              <b>Состав</b>: {menuItem.contents.join(", ")}
-            </span>
-            <span>
-              <b>Вес</b>: {menuItem.mass}г
-            </span>
-            <span>
-              <b>Белки</b>: {menuItem.proteins}г
-            </span>
-            <span>
-              <b>Жиры</b>: {menuItem.fats}г
-            </span>
-            <span>
-              <b>Углеводы</b>: {menuItem.carbonhydrates}г
-            </span>
-            <span>
-              <b>Ккал</b>: {menuItem.energy_value}
-            </span>
-          </div>
+          <ProductDescription menuItem={menuItem} />
         </div>
       </td>
       <td>{menuItem.mass}г</td>
@@ -128,5 +110,31 @@ function Product({
         ></input>
       </td>
     </tr>
+  );
+}
+
+function ProductDescription({ menuItem }: { menuItem: Doc<"menu"> }) {
+  return (
+    <div class="product-description">
+      <em>{menuItem.name}</em>
+      <span>
+        <b>Состав</b>: {menuItem.contents.join(", ")}
+      </span>
+      <span>
+        <b>Вес</b>: {menuItem.mass}г
+      </span>
+      <span>
+        <b>Белки</b>: {menuItem.proteins}г
+      </span>
+      <span>
+        <b>Жиры</b>: {menuItem.fats}г
+      </span>
+      <span>
+        <b>Углеводы</b>: {menuItem.carbonhydrates}г
+      </span>
+      <span>
+        <b>Ккал</b>: {menuItem.energy_value}
+      </span>
+    </div>
   );
 }
