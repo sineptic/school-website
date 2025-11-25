@@ -16,4 +16,8 @@ export default defineSchema({
   orders: defineTable({
     menu_item: v.id("menu"),
   }),
+  users: defineTable({
+    name: v.string(),
+    class: v.string(),
+  }),
 });
