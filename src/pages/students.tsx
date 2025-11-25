@@ -3,7 +3,7 @@ import { useEffect } from "preact/hooks";
 import { api } from "../../convex/_generated/api";
 import { Doc } from "../../convex/_generated/dataModel";
 
-export function OrderForm() {
+export function StudentOrderForm() {
   useEffect(() => {
     document.title = "школьное питание";
   });
