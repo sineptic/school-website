@@ -71,13 +71,13 @@ function Product({
 }) {
   const add = useMutation(api.order.add);
   const remove = useMutation(api.order.remove);
-  const handleClick = () => {
-    console.log();
+  const handleClick = (e) => {
     if (order === undefined) {
       add({ menuItem: menuItem._id });
     } else {
       remove({ id: order._id });
     }
+    e.preventDefault();
   };
   return (
     <tr>
