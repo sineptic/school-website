@@ -13,7 +13,17 @@ import {
   RouterProvider,
 } from "@tanstack/react-router";
 
-const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
+const convexUrl = "https://adept-jellyfish-321.convex.cloud";
+const convexUrlFromEnv = import.meta.env.VITE_CONVEX_URL as string | null;
+if (convexUrlFromEnv) {
+  if (convexUrl !== convexUrlFromEnv) {
+    console.log("convexUrl", convexUrl);
+    console.log("convexUrlFromEnv", convexUrlFromEnv);
+    throw "dev convex urls are different";
+  }
+}
+
+const convex = new ConvexReactClient(convexUrl);
 
 const rootRoute = createRootRoute({
   component: () => (
