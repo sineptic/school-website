@@ -1,0 +1,23 @@
+name: deploy dev webapp
+on: push
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      pages: write
+    steps:
+      - uses: actions/checkout@v6.0.0
+      - name: setup bun
+        uses: oven-sh/setup-bun@v2
+      - name: install dependencies
+        run: bun install
+      - name: build webapp
+        run: bun run build
+      - name: upload artifacts
+        uses: actions/upload-pages-artifact@v4.0.0
+        with:
+          path: dist/
+      - name: deploy
+        uses: actions/deploy-pages@v4.0.5
