@@ -8,11 +8,14 @@ import {
   createRootRoute,
   createRoute,
   createRouter,
+  ErrorComponent,
   Link,
   Outlet,
+  redirect,
   RouterProvider,
   useLocation,
   useNavigate,
+  useRouter,
 } from "@tanstack/react-router";
 
 const convexUrl = "https://adept-jellyfish-321.convex.cloud";
@@ -51,28 +54,31 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
 const rootRoute = createRootRoute({
   component: () => {
-    const { username } = useUser();
-    const navigate = useNavigate();
-    const location = useLocation();
-
-    useEffect(() => {
-      if (username === null) {
-        navigate({ to: "/account" });
-      }
-    }, [username, location.pathname]);
-
     return (
       <>
-        <nav className="p-2 flex gap-2">
-          <Link to="/">Home</Link> <Link to="/account">Account</Link>{" "}
-          <Link to="/student">Student</Link>
-        </nav>
-        <hr />
-        <Outlet />
+        <ProtectedRoute>
+          <nav className="p-2 flex gap-2">
+            <Link to="/">Home</Link> <Link to="/account">Account</Link>{" "}
+            <Link to="/student">Student</Link>
+          </nav>
+          <hr />
+          <Outlet />
+        </ProtectedRoute>
       </>
     );
   },
 });
+
+function ProtectedRoute({ children }) {
+  const { username } = useUser();
+  const location = useLocation();
+  const navigate = useNavigate();
+  if (!username && location.pathname !== "/account") {
+    navigate({ to: "/account" });
+    return "redirecting";
+  }
+  return children;
+}
 
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
