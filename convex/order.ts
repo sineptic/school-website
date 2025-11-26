@@ -31,10 +31,11 @@ export const getMenu = query({
 
 export const add = mutation({
   args: {
+    user: v.string(),
     menuItem: v.id("menu"),
   },
-  handler: async (ctx, { menuItem }) => {
-    ctx.db.insert("orders", { menu_item: menuItem });
+  handler: async (ctx, { user, menuItem }) => {
+    ctx.db.insert("orders", { user, menu_item: menuItem });
   },
 });
 export const remove = mutation({
@@ -47,8 +48,13 @@ export const remove = mutation({
 });
 
 export const getOrder = query({
-  args: {},
-  handler: async (ctx) => {
-    return await ctx.db.query("orders").collect();
+  args: {
+    user: v.string(),
+  },
+  handler: async (ctx, { user }) => {
+    return await ctx.db
+      .query("orders")
+      .filter((q) => q.eq(q.field("user"), user))
+      .collect();
   },
 });

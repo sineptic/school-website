@@ -3,14 +3,20 @@ import { useEffect } from "preact/hooks";
 import { api } from "../../convex/_generated/api";
 import { Doc } from "../../convex/_generated/dataModel";
 import { dayPretty } from "../logic";
+import { useUser } from "..";
 
 export function StudentOrderForm() {
   useEffect(() => {
     document.title = "школьное питание";
   });
+  const { username } = useUser();
+  if (username === null) {
+    console.error("user can't be null on routes");
+    return;
+  }
 
   const ordersByDay = useQuery(api.order.getMenu);
-  const ordered = useQuery(api.order.getOrder);
+  const ordered = useQuery(api.order.getOrder, { user: username });
 
   if (ordersByDay === undefined || ordered === undefined) {
     return "Loading";
@@ -46,6 +52,7 @@ export function StudentOrderForm() {
                 {day.map((menuItem) => {
                   return (
                     <Product
+                      user={username}
                       menuItem={menuItem}
                       order={find_order(menuItem)}
                     ></Product>
@@ -63,9 +70,11 @@ export function StudentOrderForm() {
   );
 }
 function Product({
+  user,
   menuItem,
   order,
 }: {
+  user: string;
   menuItem: Doc<"menu">;
   order: Doc<"orders"> | undefined;
 }) {
@@ -73,7 +82,7 @@ function Product({
   const remove = useMutation(api.order.remove);
   const handleClick = (e) => {
     if (order === undefined) {
-      add({ menuItem: menuItem._id });
+      add({ user, menuItem: menuItem._id });
     } else {
       remove({ id: order._id });
     }

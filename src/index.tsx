@@ -32,13 +32,13 @@ type UserContextType = {
   setUsername: (username: string | null) => void;
 };
 const UserContext = createContext<UserContextType | undefined>(undefined);
-const useUser = () => {
+export function useUser() {
   const context = useContext(UserContext);
   if (!context) {
     throw new Error("useUser must be used within a UserProvider");
   }
   return context;
-};
+}
 
 const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [username, setUsername] = useState<string | null>(null);

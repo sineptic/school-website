@@ -14,10 +14,7 @@ export default defineSchema({
     energy_value: v.float64(),
   }),
   orders: defineTable({
+    user: v.string(),
     menu_item: v.id("menu"),
-  }),
-  users: defineTable({
-    name: v.string(),
-    class: v.string(),
   }),
 });
