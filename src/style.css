@@ -63,6 +63,7 @@ table {
 }
 
 .popover-trigger {
+  color: var(--foreground);
   background: var(--background);
   width: 100%;
   height: 100%;
