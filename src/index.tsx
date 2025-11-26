@@ -1,8 +1,8 @@
-import { render } from "preact";
+import { createContext, render } from "preact";
 
 import "./style.css";
 import { ConvexProvider, ConvexReactClient } from "convex/react";
-import { StrictMode } from "preact/compat";
+import { StrictMode, useContext, useEffect, useState } from "preact/compat";
 import { StudentOrderForm } from "./pages/students";
 import {
   createRootRoute,
@@ -11,6 +11,8 @@ import {
   Link,
   Outlet,
   RouterProvider,
+  useLocation,
+  useNavigate,
 } from "@tanstack/react-router";
 
 const convexUrl = "https://adept-jellyfish-321.convex.cloud";
@@ -25,16 +27,51 @@ if (convexUrlFromEnv) {
 
 const convex = new ConvexReactClient(convexUrl);
 
+type UserContextType = {
+  username: string | null;
+  setUsername: (username: string | null) => void;
+};
+const UserContext = createContext<UserContextType | undefined>(undefined);
+const useUser = () => {
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error("useUser must be used within a UserProvider");
+  }
+  return context;
+};
+
+const UserProvider = ({ children }: { children: React.ReactNode }) => {
+  const [username, setUsername] = useState<string | null>(null);
+  return (
+    <UserContext.Provider value={{ username, setUsername }}>
+      {children}
+    </UserContext.Provider>
+  );
+};
+
 const rootRoute = createRootRoute({
-  component: () => (
-    <>
-      <nav className="p-2 flex gap-2">
-        <Link to="/">Home</Link> <Link to="/student">Student</Link>
-      </nav>
-      <hr />
-      <Outlet />
-    </>
-  ),
+  component: () => {
+    const { username } = useUser();
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    useEffect(() => {
+      if (username === null) {
+        navigate({ to: "/account" });
+      }
+    }, [username, location.pathname]);
+
+    return (
+      <>
+        <nav className="p-2 flex gap-2">
+          <Link to="/">Home</Link> <Link to="/account">Account</Link>{" "}
+          <Link to="/student">Student</Link>
+        </nav>
+        <hr />
+        <Outlet />
+      </>
+    );
+  },
 });
 
 const indexRoute = createRoute({
@@ -53,7 +90,35 @@ const studentRoute = createRoute({
   },
 });
 
-const routeTree = rootRoute.addChildren([indexRoute, studentRoute]);
+const accountRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/account",
+  component: Account,
+});
+
+function Account() {
+  const { username, setUsername } = useUser();
+
+  return (
+    <>
+      <label for="username-input">Username</label>
+      <input
+        type="text"
+        id="username-input"
+        value={username ? username : ""}
+        onInput={(e) => {
+          setUsername(e.target.value);
+        }}
+      ></input>
+    </>
+  );
+}
+
+const routeTree = rootRoute.addChildren([
+  indexRoute,
+  studentRoute,
+  accountRoute,
+]);
 
 const router = createRouter({ routeTree });
 
@@ -67,7 +132,9 @@ const rootElement = document.getElementById("app")!;
 render(
   <StrictMode>
     <ConvexProvider client={convex}>
-      <RouterProvider router={router} />
+      <UserProvider>
+        <RouterProvider router={router} />
+      </UserProvider>
     </ConvexProvider>
   </StrictMode>,
   rootElement,
