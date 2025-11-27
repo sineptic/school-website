@@ -2,21 +2,17 @@ import { createContext, render } from "preact";
 
 import "./style.css";
 import { ConvexProvider, ConvexReactClient } from "convex/react";
-import { StrictMode, useContext, useEffect, useState } from "preact/compat";
+import { StrictMode, useContext, useState } from "preact/compat";
 import { StudentOrderForm } from "./pages/students";
 import {
   createRootRoute,
   createRoute,
   createRouter,
-  ErrorComponent,
   Link,
   Outlet,
-  redirect,
   RouterProvider,
-  useLocation,
-  useNavigate,
-  useRouter,
 } from "@tanstack/react-router";
+import { ProtectedRouteWithAccount } from "./logic";
 
 const convexUrl = "https://adept-jellyfish-321.convex.cloud";
 const convexUrlFromEnv = import.meta.env.VITE_CONVEX_URL as string | null;
@@ -56,29 +52,18 @@ const rootRoute = createRootRoute({
   component: () => {
     return (
       <>
-        <ProtectedRoute>
+        <ProtectedRouteWithAccount>
           <nav className="p-2 flex gap-2">
             <Link to="/">Home</Link> <Link to="/account">Account</Link>{" "}
             <Link to="/student">Student</Link>
           </nav>
           <hr />
           <Outlet />
-        </ProtectedRoute>
+        </ProtectedRouteWithAccount>
       </>
     );
   },
 });
-
-function ProtectedRoute({ children }) {
-  const { username } = useUser();
-  const location = useLocation();
-  const navigate = useNavigate();
-  if (!username && location.pathname !== "/account") {
-    navigate({ to: "/account" });
-    return "redirecting";
-  }
-  return children;
-}
 
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
