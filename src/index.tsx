@@ -165,7 +165,7 @@ const routeTree = rootRoute.addChildren([
   dashboard1,
 ]);
 
-const router = createRouter({ routeTree });
+const router = createRouter({ routeTree, basepath: "/school-website" });
 
 declare module "@tanstack/react-router" {
   interface Register {
