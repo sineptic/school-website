@@ -28,6 +28,12 @@ export const getMenu = query({
     return res;
   },
 });
+export const getFlatMenu = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db.query("menu").collect();
+  },
+});
 
 export const add = mutation({
   args: {
@@ -56,5 +62,12 @@ export const getOrder = query({
       .query("orders")
       .filter((q) => q.eq(q.field("user"), user))
       .collect();
+  },
+});
+
+export const getAllOrders = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db.query("orders").collect();
   },
 });

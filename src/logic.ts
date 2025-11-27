@@ -15,7 +15,7 @@ export function dayPretty(day: number) {
   ];
   const name = names[(day - 1) % 7];
 
-  return `День ${day} ${name}`;
+  return `День\u00A0${day} ${name}`;
 }
 
 export function ProtectedRouteWithAccount({
