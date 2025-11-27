@@ -93,7 +93,13 @@ table {
   display: flex;
   flex-direction: column;
   text-align: left;
-  padding: 20px;
+}
+.headerless-table {
+  border: none;
+}
+
+.popover-main-content {
+  padding: 25px;
 }
 .popover-closing {
   color: red;
@@ -102,4 +108,10 @@ table {
   right: 5px;
   background: unset;
   border: unset;
+}
+.popover-content::backdrop {
+  backdrop-filter: brightness(0.3);
+}
+.popover-content {
+  padding: 0;
 }

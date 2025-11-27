@@ -4,7 +4,7 @@ import { api } from "../../convex/_generated/api";
 import { Doc } from "../../convex/_generated/dataModel";
 import { dayPretty } from "@/logic";
 import { useUser } from "@/index";
-import ProductCheckbox from "@/components/ProductCheckbox";
+import ProductRow from "@/components/ProductRow";
 
 export function StudentOrderForm() {
   useEffect(() => {
@@ -52,11 +52,12 @@ export function StudentOrderForm() {
                 </tr>
                 {day.map((menuItem) => {
                   return (
-                    <Product
+                    <ProductRow
                       user={username}
                       menuItem={menuItem}
                       order={find_order(menuItem)}
-                    ></Product>
+                      detailedDescription={true}
+                    ></ProductRow>
                   );
                 })}
                 <tr>
@@ -71,47 +72,9 @@ export function StudentOrderForm() {
   );
 }
 
-function Product({
-  user,
-  menuItem,
-  order,
-}: {
-  user: string;
-  menuItem: Doc<"menu">;
-  order: Doc<"orders"> | undefined;
-}) {
+export function ProductDescription({ menuItem }: { menuItem: Doc<"menu"> }) {
   return (
-    <tr>
-      <td class="hover-group">
-        <button
-          class="popover-trigger"
-          popovertarget={`${menuItem._id}-detailed-description`}
-        >
-          {menuItem.name}
-        </button>
-        <div id={`${menuItem._id}-detailed-description`} popover>
-          <button
-            class="popover-closing"
-            popovertarget={`${menuItem._id}-detailed-description`}
-            popovertargetaction="hide"
-          >
-            x
-          </button>
-          <ProductDescription menuItem={menuItem} />
-        </div>
-      </td>
-      <td>{menuItem.mass}г</td>
-      <td>{menuItem.price} руб</td>
-      <td>
-        <ProductCheckbox user={user} menuItem={menuItem} order={order} />
-      </td>
-    </tr>
-  );
-}
-
-function ProductDescription({ menuItem }: { menuItem: Doc<"menu"> }) {
-  return (
-    <div class="product-description">
+    <>
       <em>{menuItem.name}</em>
       <span>
         <b>Состав</b>: {menuItem.contents.join(", ")}
@@ -131,6 +94,6 @@ function ProductDescription({ menuItem }: { menuItem: Doc<"menu"> }) {
       <span>
         <b>Ккал</b>: {menuItem.energy_value}
       </span>
-    </div>
+    </>
   );
 }

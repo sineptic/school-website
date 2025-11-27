@@ -1,6 +1,7 @@
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { dayPretty } from "@/logic";
+import ProductRow from "@/components/ProductRow";
 
 export function Dashboard1() {
   const menu = useQuery(api.order.getMenu);
@@ -14,9 +15,9 @@ export function Dashboard1() {
   for (const order of allOrders) {
     const node = users.get(order.user);
     if (node === undefined) {
-      users.set(order.user, new Set());
+      users.set(order.user, new Map());
     }
-    users.get(order.user)!.add(order.menu_item);
+    users.get(order.user)!.set(order.menu_item, order);
   }
   const orders = new Array(...users);
   return (
@@ -40,7 +41,41 @@ export function Dashboard1() {
             <tr>
               <td>{user}</td>
               {totalByDays.map((total, index) => (
-                <td>{total}</td>
+                <td>
+                  <button
+                    class="popover-trigger"
+                    popovertarget={`dashboard1-${user}-${index}`}
+                  >
+                    {total}
+                  </button>
+                  <div
+                    popover
+                    id={`dashboard1-${user}-${index}`}
+                    class="popover-content"
+                  >
+                    <button
+                      class="popover-closing"
+                      popovertarget={`dashboard1-${user}-${index}`}
+                      popovertargetaction="hide"
+                    >
+                      x
+                    </button>
+                    <div class="product-description popover-main-content">
+                      <table class="headerless-table">
+                        <tbody>
+                          {menu[index].map((item) => (
+                            <ProductRow
+                              user={user}
+                              menuItem={item}
+                              order={menuItems.get(item._id)}
+                              detailedDescription={false}
+                            />
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </td>
               ))}
             </tr>
           );
