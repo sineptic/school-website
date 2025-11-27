@@ -14,6 +14,7 @@
   "devDependencies": {
     "@convex-dev/migrations": "^0.3.0",
     "@preact/preset-vite": "^2.10.2",
+    "@types/node": "^24.10.1",
     "typescript": "^5.9.3",
     "vite": "^7.0.4"
   }

@@ -2,6 +2,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { dayPretty } from "@/logic";
 import ProductRow from "@/components/ProductRow";
+import Popover from "@/components/Popover";
 
 export function Dashboard1() {
   const menu = useQuery(api.order.getMenu);
@@ -42,39 +43,26 @@ export function Dashboard1() {
               <td>{user}</td>
               {totalByDays.map((total, index) => (
                 <td>
-                  <button
-                    class="popover-trigger"
-                    popovertarget={`dashboard1-${user}-${index}`}
-                  >
-                    {total}
-                  </button>
-                  <div
-                    popover
+                  <Popover
+                    trigger={total}
                     id={`dashboard1-${user}-${index}`}
-                    class="popover-content"
-                  >
-                    <button
-                      class="popover-closing"
-                      popovertarget={`dashboard1-${user}-${index}`}
-                      popovertargetaction="hide"
-                    >
-                      x
-                    </button>
-                    <div class="product-description popover-main-content">
-                      <table class="headerless-table">
-                        <tbody>
-                          {menu[index].map((item) => (
-                            <ProductRow
-                              user={user}
-                              menuItem={item}
-                              order={menuItems.get(item._id)}
-                              detailedDescription={false}
-                            />
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
+                    target={
+                      <div class="popover-main-content">
+                        <table class="headerless-table">
+                          <tbody>
+                            {menu[index].map((item) => (
+                              <ProductRow
+                                user={user}
+                                menuItem={item}
+                                order={menuItems.get(item._id)}
+                                detailedDescription={false}
+                              />
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    }
+                  />
                 </td>
               ))}
             </tr>

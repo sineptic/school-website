@@ -13,7 +13,6 @@ import {
 } from "@tanstack/react-router";
 import { StudentOrderForm } from "@/pages/students";
 import { ProtectedRouteWithAccount } from "@/logic";
-import { Doc } from "../convex/_generated/dataModel";
 import { Dashboard1 } from "./pages/dashboard_1";
 
 const convexUrl = "https://adept-jellyfish-321.convex.cloud";

@@ -1,6 +1,7 @@
-import ProductCheckbox from "@/components/ProductCheckbox";
 import { Doc } from "../../convex/_generated/dataModel";
-import { ProductDescription } from "@/pages/students";
+import ProductCheckbox from "@/components/ProductCheckbox";
+import ProductDescription from "@/components/ProductDescription";
+import Popover from "./Popover";
 
 export default function ProductRow({
   user,
@@ -17,30 +18,15 @@ export default function ProductRow({
     <tr>
       <td>
         {detailedDescription ? (
-          <>
-            <button
-              class="popover-trigger"
-              popovertarget={`${menuItem._id}-detailed-description`}
-            >
-              {menuItem.name}
-            </button>
-            <div
-              id={`${menuItem._id}-detailed-description`}
-              popover
-              class="popover-content"
-            >
-              <button
-                class="popover-closing"
-                popovertarget={`${menuItem._id}-detailed-description`}
-                popovertargetaction="hide"
-              >
-                x
-              </button>
-              <div class="product-description popover-main-content">
+          <Popover
+            trigger={menuItem.name}
+            id={`${menuItem._id}-detailed-description`}
+            target={
+              <div class="popover-main-content product-description">
                 <ProductDescription menuItem={menuItem} />
               </div>
-            </div>
-          </>
+            }
+          />
         ) : (
           menuItem.name
         )}

@@ -29,11 +29,12 @@ table {
   td,
   th {
     border: solid thin;
-    /*height: 1.4em;*/
     max-width: 15rem;
-    /*width: -webkit-fill-available;*/
     text-align: center;
     padding: 0;
+    &:not(:has(.popover-trigger)) {
+      padding: 3px;
+    }
   }
 }
 
