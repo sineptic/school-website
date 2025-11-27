@@ -1,3 +1,4 @@
+import path from "path";
 import { defineConfig } from "vite";
 import preact from "@preact/preset-vite";
 
@@ -5,6 +6,11 @@ import preact from "@preact/preset-vite";
 export default defineConfig({
   base: "/school-website/",
   plugins: [preact()],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "src"),
+    },
+  },
   esbuild: {
     minifyIdentifiers: false,
     minifyWhitespace: false,

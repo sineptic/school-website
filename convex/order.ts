@@ -28,12 +28,6 @@ export const getMenu = query({
     return res;
   },
 });
-export const getFlatMenu = query({
-  args: {},
-  handler: async (ctx) => {
-    return await ctx.db.query("menu").collect();
-  },
-});
 
 export const add = mutation({
   args: {

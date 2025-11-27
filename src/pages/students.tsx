@@ -1,9 +1,10 @@
-import { useQuery, useMutation } from "convex/react";
+import { useQuery } from "convex/react";
 import { useEffect } from "preact/hooks";
 import { api } from "../../convex/_generated/api";
 import { Doc } from "../../convex/_generated/dataModel";
-import { dayPretty } from "../logic";
-import { useUser } from "..";
+import { dayPretty } from "@/logic";
+import { useUser } from "@/index";
+import ProductCheckbox from "@/components/ProductCheckbox";
 
 export function StudentOrderForm() {
   useEffect(() => {
@@ -69,6 +70,7 @@ export function StudentOrderForm() {
     </table>
   );
 }
+
 function Product({
   user,
   menuItem,
@@ -78,16 +80,6 @@ function Product({
   menuItem: Doc<"menu">;
   order: Doc<"orders"> | undefined;
 }) {
-  const add = useMutation(api.order.add);
-  const remove = useMutation(api.order.remove);
-  const handleClick = (e) => {
-    if (order === undefined) {
-      add({ user, menuItem: menuItem._id });
-    } else {
-      remove({ id: order._id });
-    }
-    e.preventDefault();
-  };
   return (
     <tr>
       <td class="hover-group">
@@ -111,12 +103,7 @@ function Product({
       <td>{menuItem.mass}г</td>
       <td>{menuItem.price} руб</td>
       <td>
-        <input
-          type="checkbox"
-          class="food-order-checkbox"
-          onClick={handleClick}
-          checked={order !== undefined}
-        ></input>
+        <ProductCheckbox user={user} menuItem={menuItem} order={order} />
       </td>
     </tr>
   );
