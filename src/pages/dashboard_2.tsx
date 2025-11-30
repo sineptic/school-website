@@ -10,6 +10,7 @@ import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import { useMemo } from "preact/hooks";
@@ -49,6 +50,8 @@ export function Dashboard2() {
       columnHelper.accessor("user", {
         header: "User",
         cell: (info) => info.getValue(),
+        // case-insensitive
+        sortingFn: "text",
       }),
     ];
     const dynamicColumns: ColumnDef<OrderRow, any>[] = menu.flatMap(
@@ -75,6 +78,7 @@ export function Dashboard2() {
     data: tableData,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
   });
 
   return (
@@ -84,15 +88,22 @@ export function Dashboard2() {
           <tr key={headerGroup.id}>
             {headerGroup.headers.map((header) => (
               <th
-                style={{ padding: "8px" }}
                 key={header.id}
                 colSpan={header.colSpan}
+                onClick={header.column.getToggleSortingHandler()}
+                style={{
+                  cursor: header.column.getCanSort() ? "pointer" : "default",
+                  padding: "8px",
+                }}
               >
-                {/* HACK: Use flexRender to render the header content */}
                 {flexRender(
                   header.column.columnDef.header,
                   header.getContext(),
                 )}
+                {{
+                  asc: "\u00A0↓",
+                  desc: "\u00A0↑",
+                }[header.column.getIsSorted() as string] ?? null}
               </th>
             ))}
           </tr>
