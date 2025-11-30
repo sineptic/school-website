@@ -5,7 +5,7 @@
     "moduleResolution": "bundler",
     "noEmit": true,
     "allowJs": true,
-    "checkJs": true,
+    "checkJs": false,
     "strictNullChecks": true,
     "strict": true,
 

@@ -97,8 +97,8 @@ function Account() {
         type="text"
         id="username-input"
         value={username ? username : ""}
-        onInput={(e) => {
-          setUsername(e.target.value);
+        onInput={(event) => {
+          setUsername(event.currentTarget.value);
         }}
       ></input>
     </>
