@@ -7,16 +7,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tanstack/react-router": "^1.139.3",
+    "@tanstack/react-router": "^1.139.12",
     "@tanstack/react-table": "^8.21.3",
     "convex": "^1.29.3",
-    "preact": "^10.26.9"
+    "preact": "^10.27.2"
   },
   "devDependencies": {
-    "@convex-dev/migrations": "^0.3.0",
+    "@convex-dev/migrations": "^0.3.1",
     "@preact/preset-vite": "^2.10.2",
     "@types/node": "^24.10.1",
     "typescript": "^5.9.3",
-    "vite": "^7.0.4"
-  }
+    "vite": "^7.2.4"
+  },
+  "trustedDependencies": []
 }
