@@ -33,12 +33,17 @@ export default defineConfig({
 
             if (id.includes("store")) return "tanstack-store";
 
+            if (id.includes("react-table") || id.includes("table-core"))
+              return "tanstack-table";
+
             console.error("unknown tanstack library", id);
           }
           if (id.includes("tiny-warning")) return "tanstack-router";
           if (id.includes("tiny-invariant")) return "tanstack-router";
           if (id.includes("seroval")) return "tanstack-router";
           if (id.includes("use-sync-external-store")) return "tanstack-store";
+          if (id.includes("polyfill")) return "polyfill";
+          if (id.includes("commonjsHelpers")) return "commonjsHelpers";
 
           return undefined;
         },
