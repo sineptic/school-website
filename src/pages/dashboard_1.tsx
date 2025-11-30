@@ -12,7 +12,7 @@ export function Dashboard1() {
     return "Loading";
   }
 
-  var users = new Map();
+  let users = new Map();
   for (const order of allOrders) {
     const node = users.get(order.user);
     if (node === undefined) {
@@ -54,7 +54,7 @@ export function Dashboard1() {
                               <ProductRow
                                 user={user}
                                 menuItem={item}
-                                order={menuItems.get(item._id)}
+                                orderId={menuItems.get(item._id)}
                                 detailedDescription={false}
                               />
                             ))}

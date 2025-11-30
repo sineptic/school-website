@@ -13,13 +13,13 @@ export function Dashboard2() {
     return "Loading";
   }
 
-  var users = new Map<string, Map<Id<"menu">, Doc<"orders">>>();
+  let users = new Map<string, Map<Id<"menu">, Id<"orders">>>();
   for (const order of allOrders) {
     const node = users.get(order.user);
     if (node === undefined) {
       users.set(order.user, new Map());
     }
-    users.get(order.user)!.set(order.menu_item, order);
+    users.get(order.user)!.set(order.menu_item, order._id);
   }
   const orders = new Array(...users);
 
@@ -47,8 +47,8 @@ export function Dashboard2() {
                   <DayCell
                     user={user}
                     dayIndex={dayIndex}
-                    menu={menu}
                     orderedProducts={orderedProducts}
+                    menu={menu}
                   />
                 </td>
               ))}
@@ -68,7 +68,7 @@ function DayCell({
 }: {
   user: string;
   dayIndex: number;
-  orderedProducts: Map<Id<"menu">, Doc<"orders">>;
+  orderedProducts: Map<Id<"menu">, Id<"orders">>;
   menu: Doc<"menu">[][];
 }) {
   const total = menu[dayIndex]
@@ -86,7 +86,7 @@ function DayCell({
                 <ProductRow
                   user={user}
                   menuItem={item}
-                  order={orderedProducts.get(item._id)}
+                  orderId={orderedProducts.get(item._id)}
                   detailedDescription={false}
                 />
               ))}

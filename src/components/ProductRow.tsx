@@ -1,4 +1,4 @@
-import { Doc } from "../../convex/_generated/dataModel";
+import { Doc, Id } from "../../convex/_generated/dataModel";
 import ProductCheckbox from "@/components/ProductCheckbox";
 import ProductDescription from "@/components/ProductDescription";
 import Popover from "./Popover";
@@ -6,12 +6,12 @@ import Popover from "./Popover";
 export default function ProductRow({
   user,
   menuItem,
-  order,
+  orderId,
   detailedDescription,
 }: {
   user: string;
   menuItem: Doc<"menu">;
-  order: Doc<"orders"> | undefined;
+  orderId: Id<"orders"> | undefined;
   detailedDescription: boolean;
 }) {
   return (
@@ -34,7 +34,7 @@ export default function ProductRow({
       <td>{menuItem.mass}г</td>
       <td>{menuItem.price} руб</td>
       <td>
-        <ProductCheckbox user={user} menuItem={menuItem} order={order} />
+        <ProductCheckbox user={user} menuItem={menuItem} orderId={orderId} />
       </td>
     </tr>
   );

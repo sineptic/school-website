@@ -1,23 +1,23 @@
 import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import { Doc } from "../../convex/_generated/dataModel";
+import { Doc, Id } from "../../convex/_generated/dataModel";
 
 export default function ProductCheckbox({
   user,
   menuItem,
-  order,
+  orderId,
 }: {
   user: string;
   menuItem: Doc<"menu">;
-  order: Doc<"orders"> | undefined;
+  orderId: Id<"orders"> | undefined;
 }) {
   const add = useMutation(api.order.add);
   const remove = useMutation(api.order.remove);
   const handleClick = (e: { preventDefault: () => void }) => {
-    if (order === undefined) {
+    if (orderId === undefined) {
       add({ user, menuItem: menuItem._id });
     } else {
-      remove({ id: order._id });
+      remove({ id: orderId });
     }
     e.preventDefault();
   };
@@ -26,7 +26,7 @@ export default function ProductCheckbox({
       type="checkbox"
       class="food-order-checkbox"
       onClick={handleClick}
-      checked={order !== undefined}
+      checked={orderId !== undefined}
     ></input>
   );
 }
