@@ -4,6 +4,20 @@ import { dayPretty } from "@/logic";
 import ProductRow from "@/components/ProductRow";
 import Popover from "@/components/Popover";
 import { Doc, Id } from "../../convex/_generated/dataModel";
+import {
+  buildHeaderGroups,
+  ColumnDef,
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { useMemo } from "preact/hooks";
+
+type OrderRow = {
+  user: string;
+  orderedProducts: Map<Id<"menu">, Id<"orders">>;
+};
 
 export function Dashboard2() {
   const menu: Doc<"menu">[][] | undefined = useQuery(api.order.getMenu);
@@ -13,48 +27,87 @@ export function Dashboard2() {
     return "Loading";
   }
 
-  let users = new Map<string, Map<Id<"menu">, Id<"orders">>>();
-  for (const order of allOrders) {
-    const node = users.get(order.user);
-    if (node === undefined) {
-      users.set(order.user, new Map());
+  const tableData = useMemo(() => {
+    let users = new Map<string, Map<Id<"menu">, Id<"orders">>>();
+    for (const order of allOrders) {
+      const node = users.get(order.user);
+      if (node === undefined) {
+        users.set(order.user, new Map());
+      }
+      users.get(order.user)!.set(order.menu_item, order._id);
     }
-    users.get(order.user)!.set(order.menu_item, order._id);
-  }
-  const orders = new Array(...users);
+    return Array.from(users).map(([user, orderedProducts]) => ({
+      user,
+      orderedProducts,
+    }));
+  }, [allOrders]);
 
-  const headers = (
-    <>
-      <th>User</th>
-      {menu.map((_day, index) => (
-        <th style={{ padding: "8px" }}>{dayPretty(index + 1)}</th>
-      ))}
-    </>
-  );
+  const columnHelper = createColumnHelper<OrderRow>();
+
+  const columns = useMemo(() => {
+    const staticColumns: ColumnDef<OrderRow, any>[] = [
+      columnHelper.accessor("user", {
+        header: "User",
+        cell: (info) => info.getValue(),
+      }),
+    ];
+    const dynamicColumns: ColumnDef<OrderRow, any>[] = menu.flatMap(
+      (_day, dayIndex) => {
+        const columnId = `day-${dayIndex + 1}`;
+        return columnHelper.display({
+          id: columnId,
+          header: () => dayPretty(dayIndex + 1),
+          cell: (props) => (
+            <DayCell
+              user={props.row.original.user}
+              dayIndex={dayIndex}
+              orderedProducts={props.row.original.orderedProducts}
+              menu={menu}
+            />
+          ),
+        });
+      },
+    );
+    return [...staticColumns, ...dynamicColumns];
+  }, [menu]);
+
+  const table = useReactTable({
+    data: tableData,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
 
   return (
     <table>
       <thead>
-        <tr>{headers}</tr>
+        {table.getHeaderGroups().map((headerGroup) => (
+          <tr key={headerGroup.id}>
+            {headerGroup.headers.map((header) => (
+              <th
+                style={{ padding: "8px" }}
+                key={header.id}
+                colSpan={header.colSpan}
+              >
+                {/* HACK: Use flexRender to render the header content */}
+                {flexRender(
+                  header.column.columnDef.header,
+                  header.getContext(),
+                )}
+              </th>
+            ))}
+          </tr>
+        ))}
       </thead>
       <tbody>
-        {orders.map(([user, orderedProducts]) => {
-          return (
-            <tr>
-              <td>{user}</td>
-              {Array.from({ length: 14 }, (_, dayIndex) => (
-                <td>
-                  <DayCell
-                    user={user}
-                    dayIndex={dayIndex}
-                    orderedProducts={orderedProducts}
-                    menu={menu}
-                  />
-                </td>
-              ))}
-            </tr>
-          );
-        })}
+        {table.getRowModel().rows.map((row) => (
+          <tr key={row.id}>
+            {row.getVisibleCells().map((cell) => (
+              <td key={cell.id}>
+                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              </td>
+            ))}
+          </tr>
+        ))}
       </tbody>
     </table>
   );
