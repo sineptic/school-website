@@ -55,7 +55,7 @@ export function StudentOrderForm() {
                     <ProductRow
                       user={username}
                       menuItem={menuItem}
-                      orderId={find_order(menuItem)}
+                      orderId={find_order(menuItem)?._id}
                       detailedDescription={true}
                     />
                   );
