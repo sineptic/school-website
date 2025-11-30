@@ -1,5 +1,5 @@
 import { ToOptions, useLocation, useNavigate } from "@tanstack/react-router";
-import { useUser } from ".";
+import { useUser } from "@/index";
 
 export function dayPretty(day: number) {
   if (!(day >= 1 && day <= 14)) throw "invalid date";

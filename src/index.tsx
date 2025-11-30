@@ -14,6 +14,7 @@ import {
 import { StudentOrderForm } from "@/pages/students";
 import { ProtectedRouteWithAccount } from "@/logic";
 import { Dashboard1 } from "./pages/dashboard_1";
+import { Dashboard2 } from "./pages/dashboard_2";
 
 const convexUrl = "https://adept-jellyfish-321.convex.cloud";
 const convexUrlFromEnv = import.meta.env.VITE_CONVEX_URL as string | null;
@@ -57,7 +58,8 @@ const rootRoute = createRootRoute({
           <nav className="p-2 flex gap-2">
             <Link to="/">Home</Link> <Link to="/account">Account</Link>{" "}
             <Link to="/student">Student</Link>{" "}
-            <Link to="/dashboard1">Dashboard 1</Link>
+            <Link to="/dashboard1">Dashboard 1</Link>{" "}
+            <Link to="/dashboard2">Dashboard 2</Link>
           </nav>
           <hr />
           <Outlet />
@@ -111,11 +113,18 @@ const dashboard1 = createRoute({
   component: Dashboard1,
 });
 
+const dashboard2 = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/dashboard2",
+  component: Dashboard2,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   studentRoute,
   accountRoute,
   dashboard1,
+  dashboard2,
 ]);
 
 const router = createRouter({ routeTree, basepath: "/school-website/" });
