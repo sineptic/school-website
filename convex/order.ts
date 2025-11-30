@@ -62,6 +62,6 @@ export const getOrder = query({
 export const getAllOrders = query({
   args: {},
   handler: async (ctx) => {
-    return await ctx.db.query("orders").order("asc").collect();
+    return await ctx.db.query("orders").collect();
   },
 });

@@ -96,7 +96,7 @@ function Account() {
       <input
         type="text"
         id="username-input"
-        value={username ? username : ""}
+        value={username !== null ? username : ""}
         onInput={(event) => {
           setUsername(event.currentTarget.value);
         }}
